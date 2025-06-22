@@ -23,6 +23,51 @@
   </head>
 
   <body>
-    <%= yield %>
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md border-b border-gray-200 fixed w-full top-0 z-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          
+          <!-- Logo/Brand -->
+          <div class="flex items-center">
+            <h1 class="text-xl font-bold text-blue-600">Medical App</h1>
+          </div>
+          
+          <!-- Navigation Links -->
+          <% if user_signed_in? %>
+            <div class="flex items-center space-x-6">
+              <!-- User Info -->
+              <div class="text-sm text-gray-600">
+                Welcome, <span class="font-medium text-gray-800"><%= current_user.first_name %></span>
+                <span class="text-gray-500">(<%= current_user.role.capitalize %>)</span>
+              </div>
+              
+              <!-- Navigation Links -->
+              <div class="flex items-center space-x-4">
+                <%= link_to "Dashboard", root_path, 
+                    class: "text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors" %>
+                <%= link_to "Patients", patients_path, 
+                    class: "text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors" %>
+                <%= link_to "Logout", destroy_user_session_path, 
+                    data: { "turbo-method": :delete },
+                    class: "bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors" %>
+              </div>
+            </div>
+          <% else %>
+            <!-- Guest Links -->
+            <div class="flex items-center space-x-4">
+              <%= link_to "Login", new_user_session_path, 
+                  class: "text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors" %>
+              <%= link_to "Sign Up", new_user_registration_path, 
+                  class: "bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </nav>
+    <main class="container mx-auto mt-28 px-5 flex">
+       <% render "layouts/notice"%>
+      <%= yield %>
+    </main>
   </body>
 </html>

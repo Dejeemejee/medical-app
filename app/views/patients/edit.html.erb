@@ -1,0 +1,20 @@
+<div class="container mx-auto px-4 py-6">
+  <!-- Header -->
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">Edit Patient</h1>
+    <div class="text-sm text-gray-500">
+      Update patient information
+    </div>
+  </div>
+
+  <!-- Form -->
+  <%= render 'form', patient: @patient %>
+
+  <!-- Navigation Links -->
+  <div class="mt-6 flex space-x-4">
+    <%= link_to "Show Patient", @patient, 
+        class: "bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors" %>
+    <%= link_to "Back to Patients", patients_path, 
+        class: "bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors" %>
+  </div>
+</div>

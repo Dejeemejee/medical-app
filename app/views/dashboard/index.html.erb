@@ -1,0 +1,126 @@
+<div class="min-h-screen bg-gray-100 p-6">
+  <div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+      <h1 class="text-3xl font-bold text-gray-800 mb-2">
+        <%= current_user.role.capitalize %> Dashboard
+      </h1>
+      <p class="text-gray-600">Welcome, <%= current_user.first_name %>!</p>
+    </div>
+
+    <% if current_user.role == 'receptionist' %>
+      
+      <!-- Stats Cards -->
+      <div class="grid md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-blue-500 text-white rounded-lg p-6">
+          <h2 class="text-lg font-semibold mb-2">Total Patients</h2>
+          <p class="text-3xl font-bold"><%= @total_registered %></p>
+        </div>
+        <div class="bg-green-500 text-white rounded-lg p-6">
+          <h2 class="text-lg font-semibold mb-2">Quick Action</h2>
+          <%= link_to "Register New Patient", new_patient_path, 
+              class: "bg-white text-green-500 px-4 py-2 rounded font-medium hover:bg-gray-100" %>
+        </div>
+      </div>
+    
+      <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Recent Patients</h2>
+        <% if @recent_patients.any? %>
+          <div class="space-y-3">
+            <% @recent_patients.each do |patient| %>
+              <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100">
+                <div>
+                  <%= link_to "#{patient.first_name} #{patient.last_name}", patient, 
+                      class: "font-medium text-blue-600 hover:text-blue-800" %>
+                  <p class="text-sm text-gray-500">Registered: <%= patient.created_at.strftime("%b %d, %Y") %></p>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-gray-500 text-center py-8">No patients registered yet.</p>
+        <% end %>
+      </div>
+
+    <% elsif current_user.role == 'doctor' %>
+      
+      <!-- Stats Cards -->
+      <div class="grid md:grid-cols-3 gap-6 mb-6">
+        <div class="bg-purple-500 text-white rounded-lg p-6">
+          <h2 class="text-lg font-semibold mb-2">Assigned Patients</h2>
+          <p class="text-3xl font-bold"><%= @total_assigned %></p>
+        </div>
+        <div class="bg-blue-500 text-white rounded-lg p-6">
+          <h2 class="text-lg font-semibold mb-2">Total Patients</h2>
+          <p class="text-3xl font-bold"><%= @patients.count %></p>
+        </div>
+        <div class="bg-green-500 text-white rounded-lg p-6">
+          <h2 class="text-lg font-semibold mb-2">Status</h2>
+          <p class="text-lg font-medium">Active</p>
+        </div>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-6">
+        <!-- Assigned Patients -->
+        <div class="bg-white rounded-lg shadow p-6">
+          <h2 class="text-xl font-bold text-gray-800 mb-4">Your Assigned Patients</h2>
+          <% if @assigned_patients.any? %>
+            <div class="space-y-3">
+              <% @assigned_patients.each do |patient| %>
+                <div class="p-3 bg-gray-50 rounded-lg hover:bg-gray-100">
+                  <%= link_to "#{patient.first_name} #{patient.last_name}", patient, 
+                      class: "font-medium text-blue-600 hover:text-blue-800" %>
+                  <p class="text-sm text-gray-500">Registered by: <%= patient.registered_by.first_name %></p>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <p class="text-gray-500 text-center py-8">No patients assigned yet.</p>
+          <% end %>
+        </div>
+
+        <!-- Recent Patients -->
+        <div class="bg-white rounded-lg shadow p-6">
+          <h2 class="text-xl font-bold text-gray-800 mb-4">All Recent Patients</h2>
+          <% if @patients.any? %>
+            <div class="space-y-3">
+              <% @patients.each do |patient| %>
+                <div class="p-3 bg-gray-50 rounded-lg hover:bg-gray-100">
+                  <%= link_to "#{patient.first_name} #{patient.last_name}", patient, 
+                      class: "font-medium text-blue-600 hover:text-blue-800" %>
+                  <p class="text-sm text-gray-500">Registered: <%= patient.created_at.strftime("%b %d, %Y") %></p>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <p class="text-gray-500 text-center py-8">No patients registered yet.</p>
+          <% end %>
+        </div>
+      </div>
+
+      <div id="chart-container" class="mt-6 bg-white rounded-lg shadow p-6">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">Patient Registration Trends</h3>
+        <h2 class="text-xl font-bold mb-4">Patients Registered (Last 7 Days)</h2>
+
+        <%= column_chart @patients_per_day, xtitle: "Day", ytitle: "Patients Registered", colors: ["#38bdf8"], height: "300px" %>
+
+         <div>
+            <%= line_chart [
+          { name: "Registered", data: @registered_by_day },
+          { name: "Assigned", data: @assigned_by_day }
+        ],
+        xtitle: "Day", ytitle: "Patients", colors: ["#22c55e", "#3b82f6"], height: "350px" %>
+
+        </div>
+      </div>
+
+
+    <% else %>
+      <!-- UNKNOWN ROLE -->
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+        <strong>Error:</strong> Unknown user role: '<%= current_user.role %>'
+      </div>
+    <% end %>
+    
+  </div>
+</div>
