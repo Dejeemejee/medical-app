@@ -10,9 +10,8 @@ default: &default
   # For details on connection pooling, see Rails configuration guide
   # http://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  username: oluwaseyi  # role previously added
-  password: Oluwaseyi2004 # variable previously added
-
+  username: <%= ENV["DB_USERNAME"] %>
+  password: <%= ENV["DB_PASSWORD"] %>
 development:
   <<: *default
   database: medical_app_development
